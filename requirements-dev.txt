@@ -1,0 +1,5 @@
+txt
+mycli
+ipython
+autopep8
+psutil

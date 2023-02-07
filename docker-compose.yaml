@@ -1,0 +1,8 @@
+version: "3"
+services:
+  twitter:
+    container_name: coffechat
+    image: yufanzh/coffeechat
+    ports:
+      - "8000:8000" # 这里的端口改为和 python manage.py runserver 0.0.0.0:8000  一样的端口才行
+    command: python manage.py runserver 0.0.0.0:8000
