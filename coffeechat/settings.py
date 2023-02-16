@@ -25,7 +25,7 @@ SECRET_KEY = 'fwet4_u)b)1tv9my2^&vb+7v=byk*x3!n(-w+3-x=+!-m!cqy&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.50.188', 'localhost']
 
 
 # Application definition
@@ -37,7 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
+
+REST_FRAMEWORKD = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framwork.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
