@@ -74,4 +74,24 @@ class AccountViewSet(viewsets.ViewSet):
             'user': UserSerializer(instance=user).data,
         })
 
+    @action(method=['GET'], detail=False)
+    def login_status(self, request):
+        """
+        check user current login status
+        and other detailed info
+        """
+        data={'has_logged_in': request.user.is_authenticated}
+        if request.user.is_authenticated:
+            data['user'] = UserSerializer(request.user).data
+        return Response(data)
+    
+    @action(method=['POST'], detail=False)
+    def logout(self, request):
+        """
+        log out current user
+        """
+        django_logout(request)
+        return Reponse({'success': True})
+
+
 # Create your views here.
