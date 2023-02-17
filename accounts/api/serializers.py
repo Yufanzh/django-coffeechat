@@ -22,7 +22,7 @@ class SignupSerializer(serializers.ModelSerializer):
                 'message':'This username has been used.'
             })
         
-        if User.objects.filter(email=data['email'].lower().exists()):
+        if User.objects.filter(email=data['email'].lower()).exists():
             raise exceptions.ValidationError({
                 'message':'This email address already has an account.'
             })

@@ -12,7 +12,7 @@ from django.contrib.auth import (
 )
 from accounts.api.serializers import SignupSerializer, LoginSerializer
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
@@ -21,7 +21,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 class AccountViewSet(viewsets.ViewSet):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
     serializer_class = SignupSerializer
 
     @action(methods=['POST'], detail=False)
@@ -46,7 +46,7 @@ class AccountViewSet(viewsets.ViewSet):
             'user': UserSerializer(user).data
         })
     
-    @action(method=['POST'], detail=False)
+    @action(methods=['POST'], detail=False)
     def login(self, request):
         """
         default username: admin
@@ -74,7 +74,7 @@ class AccountViewSet(viewsets.ViewSet):
             'user': UserSerializer(instance=user).data,
         })
 
-    @action(method=['GET'], detail=False)
+    @action(methods=['GET'], detail=False)
     def login_status(self, request):
         """
         check user current login status
@@ -85,13 +85,13 @@ class AccountViewSet(viewsets.ViewSet):
             data['user'] = UserSerializer(request.user).data
         return Response(data)
     
-    @action(method=['POST'], detail=False)
+    @action(methods=['POST'], detail=False)
     def logout(self, request):
         """
         log out current user
         """
         django_logout(request)
-        return Reponse({'success': True})
+        return Response({'success': True})
 
 
 # Create your views here.
