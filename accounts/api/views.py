@@ -5,6 +5,7 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
+from rest_framework.status import HTTP_201_CREATED
 from django.contrib.auth import (
     authenticate as django_authenticate,
     login as django_login,
@@ -28,7 +29,7 @@ class AccountViewSet(viewsets.ViewSet):
     def signup(self, request):
         """
         utilize username, email, password
-        for registration process
+        for signup process
         """
 
         serializer = SignupSerializer(data=request.data)
@@ -37,14 +38,14 @@ class AccountViewSet(viewsets.ViewSet):
                 'success': False,
                 'message': "Please check input",
                 'errors': serializer.errors,
-            }, status=404)
+            }, status=400)
         
         user = serializer.save()
         django_login(request, user)
         return Response({
             'success': True,
             'user': UserSerializer(user).data
-        })
+        }, status=HTTP_201_CREATED)
     
     @action(methods=['POST'], detail=False)
     def login(self, request):
