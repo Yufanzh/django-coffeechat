@@ -1,10 +1,12 @@
 language: python
 
-python:
-  - "3.10"
+dist: focal
 
-services:
-  - docker
+python:
+  - "3.10.9"
+
+#services:
+#  - docker
 # - mysql
 
 env:
@@ -14,4 +16,4 @@ install:
   - pip install -r requirements-prd.txt
 
 script:
-  - docker-compose run code sh -c "python manage.py test"
+  - python manage.py test
