@@ -86,10 +86,6 @@ WSGI_APPLICATION = 'coffeechat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        },
         'NAME': 'twitter',
         'HOST': '192.168.50.188',
         'PORT': '3306',
