@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     #project apps
     'accounts',
+    'tweets',
 ]
 
 REST_FRAMEWORKD = {
@@ -84,8 +85,17 @@ WSGI_APPLICATION = 'coffeechat.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        },
+        'NAME': 'twitter',
+        'HOST': '192.168.50.188',
+        'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'CONN_MAX_AGE': 86400,
     }
 }
 
@@ -108,7 +118,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+# translate our steps into SQL query
+LOGGING = {
+    'version':1,
+    'disable_existing_loggers': False,
+    'handlers':{
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handler': ['console'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+    }
+}
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
