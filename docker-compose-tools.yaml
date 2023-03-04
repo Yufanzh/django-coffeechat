@@ -1,0 +1,37 @@
+# docker-compose -f docker-compose-tools.yaml up
+
+version: "3"
+services:
+  mysql8:
+    platform: linux/amd64 # 不加这行会报：ERROR: no matching manifest for linux/arm64/v8 in the manifest list entries
+    container_name: mysql8
+    image: mysql:8.0 # 镜像会从 docker hub 中拉取。地址: https://hub.docker.com/_/mysql?
+    ports:
+      - "3306:3306" # 冒号左边的宿主机的端口，右边的是容器的端口
+    restart: always # 如果容器停止，请始终重新启动容器。  如果是手动停止的，只有在 Docker daemon 重启或者容器本身手动重启时才会重启。https://docs.docker.com/config/containers/start-containers-automatically/
+    volumes:
+      - /usr/local/mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456 # root 账号的密码，记得把 Django settings.py 里面 mysql 配置项的密码和这个对应起来
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - /usr/local/redis/data:/data # /usr/local/redis/data 是你宿主机的路径；/data 是容器内的路径，容器内的 redis 会把需要持久化的数据都保存到 /data 目录下
+      - ./redis.conf:/etc/redis/redis.conf # redis.conf 这个文件已经准备好了，可以放到这个路径，也可以自己修改，比如放到项目路径中
+    restart: always
+    command: redis-server /etc/redis/redis.conf
+
+  memcahed:
+    container_name: memcahed
+    image: memcached:latest
+    restart: always
+    ports:
+      - "11211:11211"
+# QA:
+# Q: 为什么 redis 使用了 volumes，而 mysql 没有使用 volumes
+# A：挂了 volumes 之后，容器的 rm 之后重新 run 一个，数据也不会丢，想要这个特性就可以给 mysql 也挂上，因为这个项目是学习用途，所以不加也没事
+# 生产环境中，mysql 一般也不会容器化部署，redis 倒是容器化部署挺多的，因为 mysql 要求的可靠性比 redis 高一些。
