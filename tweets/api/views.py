@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from tweets.api.serializers import TweetSerializer, TweetSerializerForCreate
 from tweets.models import Tweet
+from newsfeeds.services import NewsFeedService
 
 class TweetViewSet(viewsets.GenericViewSet):
     # queryset = Tweet.objects.all()
@@ -26,7 +27,7 @@ class TweetViewSet(viewsets.GenericViewSet):
         serializer = TweetSerializer(tweets, many=True)
         return Response({'tweets': serializer.data}) # rules to return as dictionary for JSON format
     
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         serializer = TweetSerializerForCreate(
             data=request.data,
             context={'request': request},
@@ -39,6 +40,7 @@ class TweetViewSet(viewsets.GenericViewSet):
             }, status=400)
         # save will trigger create method in TweetSerializerForCreate
         tweet = serializer.save()
+        NewsFeedService.fanout_to_followers(tweet)
         return Response(TweetSerializer(tweet).data, status=201)
 
 
