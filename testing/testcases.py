@@ -1,7 +1,8 @@
-from django.test import TestCase as DjangoTestCase
+from comments.models import Comment
 from django.contrib.auth.models import User
-from tweets.models import Tweet
+from django.test import TestCase as DjangoTestCase
 from friendships.models import Friendship
+from tweets.models import Tweet
 
 
 class TestCase(DjangoTestCase):
@@ -20,3 +21,8 @@ class TestCase(DjangoTestCase):
 
     def create_friendship(self, from_user, to_user):
         return Friendship.objects.create(from_user=from_user, to_user=to_user)
+
+    def create_comment(self, user, tweet, content=None):
+        if content is None:
+            content = 'default comment content'
+        return Comment.objects.create(user=user, tweet=tweet, content=content)

@@ -14,7 +14,11 @@ class TweetViewSet(viewsets.GenericViewSet):
             return [AllowAny()] # list func can be accessed by anyone
         return [IsAuthenticated()]
 
-    def list(self, request):
+    def list(self, request, *args, **kwargs):
+        """
+        reload list method, do not list all tweets, 
+        must assign user_id as filter condition
+        """
         if 'user_id' not in request.query_params:
             return Response('missing user_id', status=400)
         
