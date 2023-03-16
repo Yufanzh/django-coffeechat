@@ -10,10 +10,10 @@ services:
       - "3306:3306" # 冒号左边的宿主机的端口，右边的是容器的端口
     restart: always # 如果容器停止，请始终重新启动容器。  如果是手动停止的，只有在 Docker daemon 重启或者容器本身手动重启时才会重启。https://docs.docker.com/config/containers/start-containers-automatically/
     volumes:
-      - /usr/local/mysql/data:/var/lib/mysql
+      #- /usr/local/mysql/data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 123456 # root 账号的密码，记得把 Django settings.py 里面 mysql 配置项的密码和这个对应起来
-
   redis:
     container_name: redis
     image: redis:latest
@@ -31,6 +31,8 @@ services:
     restart: always
     ports:
       - "11211:11211"
+volumes:
+  mysql_data:
 # QA:
 # Q: 为什么 redis 使用了 volumes，而 mysql 没有使用 volumes
 # A：挂了 volumes 之后，容器的 rm 之后重新 run 一个，数据也不会丢，想要这个特性就可以给 mysql 也挂上，因为这个项目是学习用途，所以不加也没事

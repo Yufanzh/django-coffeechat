@@ -23,22 +23,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'fwet4_u)b)1tv9my2^&vb+7v=byk*x3!n(-w+3-x=+!-m!cqy&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', '192.168.50.188', 'localhost']
-
+INTERNAL_IPS = ['172.20.0.1']
 
 # Application definition
 
 INSTALLED_APPS = [
+    # django default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # third party
+
+    # third party packages
     'rest_framework',
+    'django_filters',
+    'debug_toolbar',
+
     #project apps
     'accounts',
     'tweets',
@@ -47,9 +52,12 @@ INSTALLED_APPS = [
     'comments',
 ]
 
-REST_FRAMEWORKD = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framwork.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS':[
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ]
 }
 
 MIDDLEWARE = [
@@ -60,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'coffeechat.urls'
@@ -91,10 +100,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'twitter',
         'HOST': '192.168.50.188',
+        #'HOST': 'mysql8',
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': '123456',
-        'CONN_MAX_AGE': 86400,
     }
 }
 
@@ -118,23 +127,23 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # translate our steps into SQL query
-LOGGING = {
-    'version':1,
-    'disable_existing_loggers': False,
-    'handlers':{
-        'console':{
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django.db.backends': {
-            'handler': ['console'],
-            'propagate': True,
-            'level': 'DEBUG',
-        },
-    }
-}
+# LOGGING = {
+#     'version':1,
+#     'disable_existing_loggers': False,
+#     'handlers':{
+#         'console':{
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'handler': ['console'],
+#             'propagate': True,
+#             'level': 'DEBUG',
+#         },
+#     }
+# }
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -153,3 +162,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+try:
+    from .local_settings import *
+except:
+    pass

@@ -6,3 +6,5 @@ COPY requirements-prd.txt /code/
 RUN pip install -i https://mirrors.aliyun.com/pypi/simple -r requirements-prd.txt
 COPY . /code/
 RUN pip install djangorestframework
+RUN pip install django-filter
+RUN pip install django-debug-toolbar

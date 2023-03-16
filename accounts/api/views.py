@@ -81,7 +81,10 @@ class AccountViewSet(viewsets.ViewSet):
         check user current login status
         and other detailed info
         """
-        data={'has_logged_in': request.user.is_authenticated}
+        data={
+            'has_logged_in': request.user.is_authenticated,
+            'ip': request.META['REMOTE_ADDR']
+            }
         if request.user.is_authenticated:
             data['user'] = UserSerializer(request.user).data
         return Response(data)
