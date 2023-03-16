@@ -6,3 +6,7 @@ services:
     ports:
       - "80:8000" # 这里的端口改为和 python manage.py runserver 0.0.0.0:8000  一样的端口才行
     command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_PASSWORD=123456ad
+      - DJANGO_SUPERUSER_EMAIL=admin@admin.com

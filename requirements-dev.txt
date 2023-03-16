@@ -3,3 +3,5 @@ mycli
 ipython
 autopep8
 psutil
+django-filter
+cryptography
