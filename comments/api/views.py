@@ -8,6 +8,7 @@ from comments.api.serializers import (
     CommentSerializerForUpdate,
 )
 from comments.api.permissions import IsObjectOwner
+from utils.decorators import required_params
 
 
 class CommentViewSet(viewsets.GenericViewSet):
@@ -34,12 +35,8 @@ class CommentViewSet(viewsets.GenericViewSet):
             return [IsAuthenticated(), IsObjectOwner()]
         return [AllowAny()]
     
+    @required_params(params=['tweet_id'])
     def list(self, request, *args, **kwargs):
-        if 'tweet_id' not in request.query_params:
-            return Response({
-                'message': 'missing tweet_id in request',
-                'success': False,
-                }, status = status.HTTP_400_BAD_REQUEST)
         
         # filter method 1
         # tweet_id = request.query_params['tweet_id']
@@ -52,7 +49,8 @@ class CommentViewSet(viewsets.GenericViewSet):
             {'comments': serializer.data}, 
             status=status.HTTP_200_OK,
         ) 
-        
+    
+
 
     def create(self, request, *args, **kwargs):
         data = {
