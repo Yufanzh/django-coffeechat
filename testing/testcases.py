@@ -38,3 +38,9 @@ class TestCase(DjangoTestCase):
             user=user,
         )
         return instance
+    
+    def create_user_and_client(self, *args, **kwargs):
+        user = self.create_user(*args, **kwargs)
+        client = APIClient()
+        client.force_authenticate(user)
+        return user, client
