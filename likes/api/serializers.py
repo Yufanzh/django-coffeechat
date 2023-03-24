@@ -13,7 +13,7 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Likes
         fields = ('user', 'created_at')
 
-class LikeSerializerForCreate(serializers.ModelSerializer):
+class BaseLikeSerializerForCreateAndCancel(serializers.ModelSerializer):
     content_type = serializers.ChoiceField(choices=['comment', 'tweet'])
     object_id = serializers.IntegerField()
 
@@ -37,6 +37,9 @@ class LikeSerializerForCreate(serializers.ModelSerializer):
             raise ValidationError({'object_id': 'Object does not exist'})
         return data
 
+    
+class LikeSerializerForCreate(BaseLikeSerializerForCreateAndCancel):
+
     def create(self, validated_data):
         model_class = self._get_model_class(validated_data)
         instance, _ = Likes.objects.get_or_create(
@@ -46,3 +49,16 @@ class LikeSerializerForCreate(serializers.ModelSerializer):
         )
 
         return instance
+
+class LikeSerializerForCancel(BaseLikeSerializerForCreateAndCancel):
+
+    def cancel(self):
+        """ cancel doesn't need validated_data as arguments"""
+        model_class = self._get_model_class(self.validated_data)
+        deleted, _ = Likes.objects.filter(
+            content_type = ContentType.objects.get_for_model(model_class),
+            object_id = self.validated_data['object_id'],
+            user = self.context['request'].user,
+        ).delete()
+        return deleted
+
