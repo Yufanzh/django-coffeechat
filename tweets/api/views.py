@@ -5,7 +5,7 @@ from tweets.api.serializers import TweetSerializer, TweetSerializerForCreate
 from tweets.models import Tweet
 from newsfeeds.services import NewsFeedService
 from utils.decorators import required_params
-from tweets.api.serializers import TweetSerializerWithComments
+from tweets.api.serializers import TweetSerializerForDetail
 
 class TweetViewSet(viewsets.GenericViewSet):
     # queryset = Tweet.objects.all()
@@ -26,12 +26,18 @@ class TweetViewSet(viewsets.GenericViewSet):
         #).order_by('-created_at') # from newest to oldest
         user_id = request.query_params['user_id']
         tweets = Tweet.objects.filter(user_id=user_id).order_by('-created_at')
-        serializer = TweetSerializer(tweets, many=True)
+        serializer = TweetSerializer(
+            tweets, 
+            context={'request': request},
+            many=True,
+        )
         return Response({'tweets': serializer.data}) # rules to return as dictionary for JSON format
     
     def retrieve(self, request, *args, **kwargs):
         tweet = self.get_object()
-        return Response(TweetSerializerWithComments(tweet).data)
+        return Response(TweetSerializerForDetail(
+            tweet, 
+            context={'request': request}).data)
     
     def create(self, request, *args, **kwargs):
         serializer = TweetSerializerForCreate(
@@ -47,7 +53,11 @@ class TweetViewSet(viewsets.GenericViewSet):
         # save will trigger create method in TweetSerializerForCreate
         tweet = serializer.save()
         NewsFeedService.fanout_to_followers(tweet)
-        return Response(TweetSerializer(tweet).data, status=201)
+        return Response(TweetSerializer(
+            tweet, 
+            context={'request': request}).data, 
+            status=201
+            )
 
 
     
