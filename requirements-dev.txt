@@ -5,3 +5,4 @@ autopep8
 psutil
 django-filter
 cryptography
+django-notifications-hq
