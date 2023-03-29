@@ -4,3 +4,4 @@ pymysql
 djangorestframework==3.12.2
 django-filter
 cryptography
+django-notifications-hq
