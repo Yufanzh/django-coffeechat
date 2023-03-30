@@ -15,9 +15,12 @@ class NotificationViewSet(
 
     def get_queryset(self):
         return self.request.user.notifications.all()
+        # another way
+        # return Notification.objects.filter(recipient=self.request.user)
     
     @action(methods=['GET'], detail=False, url_path='unread-count')
     def unread_count(self, request, *args, **kwargs):
+        # GET /api/notifications/unread-count/ # use - not _
         count = self.get_queryset().filter(unread=True).count()
         return Response({'unread_count': count}, status=status.HTTP_200_OK)
     
