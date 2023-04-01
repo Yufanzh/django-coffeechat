@@ -6,3 +6,4 @@ psutil
 django-filter
 cryptography
 django-notifications-hq
+django-debug-toolbar
