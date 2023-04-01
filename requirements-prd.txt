@@ -5,3 +5,4 @@ djangorestframework==3.12.2
 django-filter
 cryptography
 django-notifications-hq
+django-debug-toolbar
