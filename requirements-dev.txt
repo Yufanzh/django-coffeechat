@@ -7,3 +7,5 @@ django-filter
 cryptography
 django-notifications-hq
 django-debug-toolbar
+django-storages
+boto3
