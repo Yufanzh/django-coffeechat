@@ -12,17 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mysql:8.0
+        image: mysql:5.7
         env:
-          MYSQL_DATABASE:mysql8
-          MYSQL_ROOT_PASSWORD:123456
-        ports:
-          - "3306:3306"
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          MYSQL_ROOT_PASSWORD: 123456
+          MYSQL_DATABASE: mysql8
+        ports: ['3306:3306']
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.9, '3.10']
+        python-version: ['3.10']
 
     steps:
     - uses: actions/checkout@v3
