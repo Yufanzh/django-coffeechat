@@ -1,4 +1,11 @@
-from accounts.api.serializers import UserSerializer
+from accounts.api.serializers import (
+    UserSerializer,
+    LoginSerializer,
+    SignupSerializer,
+    UserSerializerWithProfile,
+    UserProfileSerializerForUpdate,
+)
+from accounts.models import UserProfile
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -11,7 +18,9 @@ from django.contrib.auth import (
     login as django_login,
     logout as django_logout,
 )
-from accounts.api.serializers import SignupSerializer, LoginSerializer
+from utils.permissions import IsObjectOwner
+
+# Create your views here.
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -19,7 +28,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAdminUser,)
 
 class AccountViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
@@ -100,5 +109,11 @@ class AccountViewSet(viewsets.ViewSet):
         django_logout(request)
         return Response({'success': True})
 
+class UserProfileViewSet(
+    viewsets.GenericViewSet,
+    viewsets.mixins.UpdateModelMixin,
+):
+    queryset = UserProfile
+    permission_classes = (permissions.IsAuthenticated, IsObjectOwner)
+    serializer_class = UserProfileSerializerForUpdate
 
-# Create your views here.
