@@ -208,8 +208,8 @@ class LikeApiTests(TestCase):
          # test tweets list api
          response = self.dongxie_client.get(TWEET_LIST_API, {'user_id': self.linghu.id})
          self.assertEqual(response.status_code, 200)
-         self.assertEqual(response.data['tweets'][0]['has_liked'], True)
-         self.assertEqual(response.data['tweets'][0]['likes_count'], 1)
+         self.assertEqual(response.data['results'][0]['has_liked'], True)
+         self.assertEqual(response.data['results'][0]['likes_count'], 1)
 
          # test newsfeed list api
          self.create_like(self.linghu, tweet)
