@@ -14,6 +14,9 @@ class FriendshipPagination(PageNumberPagination):
     # maximum page_size allowed
     max_page_size = 20
 
+    # SQL query example: select * FROM problem_table LIMIT size OFFSET (page-1)*size
+    # Tweet.objects.all()[50:100]
+
     def get_paginated_response(self, data):
         return Response({
             'total_results': self.page.paginator.count,
