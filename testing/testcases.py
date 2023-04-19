@@ -1,5 +1,6 @@
 from comments.models import Comment
 from django.contrib.auth.models import User
+from django.core.cache import caches
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase as DjangoTestCase
 from friendships.models import Friendship
@@ -10,6 +11,17 @@ from newsfeeds.models import NewsFeed
 
 
 class TestCase(DjangoTestCase):
+
+    def clear_cache(self):
+        caches['testing'].clear()
+    
+    @property
+    def anonymous_client(self):
+        if hasattr(self, '_anonymous_client'):
+            return self._anonymous_client
+        self._anonymous_client = APIClient()
+        return self._anonymous_client
+
     def create_user(self, username, email=None, password=None):
         if password is None:
             password = 'generic password'

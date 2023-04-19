@@ -14,7 +14,6 @@ class LikeApiTests(TestCase):
     def setUp(self):
         self.linghu, self.linghu_client = self.create_user_and_client('linghu')
         self.dongxie, self.dongxie_client = self.create_user_and_client('dongxie')
-        self.anonymous_client = APIClient()
     
     def test_tweet_likes(self):
         tweet = self.create_tweet(self.linghu)

@@ -8,3 +8,5 @@ COPY . /code/
 RUN pip install djangorestframework
 RUN pip install django-filter
 RUN pip install django-debug-toolbar
+#RUN pip install python-memcached
+RUN pip install pymemcache

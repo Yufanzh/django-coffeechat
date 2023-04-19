@@ -8,4 +8,4 @@ django-notifications-hq
 django-debug-toolbar
 django-storages
 boto3
-python-memcached
+pymemcache

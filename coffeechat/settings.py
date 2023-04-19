@@ -162,6 +162,26 @@ USE_L10N = True
 
 USE_TZ = True
 
+# https://docs.djangoproject.com/en/3.1/topics/cache/
+# use `pip install python-memcached`
+# DO NOT pip install memcache or django-memcached
+CACHES = {
+    'default': {
+        #'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '127.0.0.1:11211',
+        #'LOCATION': '172.20.0.2:11211',
+        'TIMEOUT': 86400,
+    },
+    'testing': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '127.0.0.1:11211',
+        #'LOCATION': '172.20.0.2:11211',
+        'TIMEOUT': 86400,
+        'KEY_PREFIX': 'testing',
+    },
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
