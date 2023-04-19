@@ -40,3 +40,4 @@ class FriendshipService(object):
     def invalidate_following_cache(cls, from_user_id):
         key = FOLLOWINGS_PATTERN.format(user_id=from_user_id)
         cache.delete(key)
+    
