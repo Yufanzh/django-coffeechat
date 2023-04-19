@@ -35,7 +35,6 @@ class NotificationsAPITests(TestCase):
         self.linghu, self.linghu_client = self.create_user_and_client('linghu')
         self.dongxie, self.dongxie_client = self.create_user_and_client('dongxie')
         self.linghu_tweet = self.create_tweet(self.linghu)
-        self.anonymous_client = APIClient()
     
     def test_unread_count(self):
         self.dongxie_client.post(LIKE_URL, {

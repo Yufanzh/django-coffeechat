@@ -9,3 +9,4 @@ django-notifications-hq
 django-debug-toolbar
 django-storages
 boto3
+pymemcache

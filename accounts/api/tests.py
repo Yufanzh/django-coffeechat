@@ -134,7 +134,6 @@ class AccountApiTests(TestCase):
 class UserProfileAPITests(TestCase):
     
     def test_update(self):
-        self.anonymous_client = APIClient()
         linghu, linghu_client = self.create_user_and_client('linghu')
         p = linghu.profile
         p.nickname = 'old nickname'
