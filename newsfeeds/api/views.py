@@ -9,6 +9,7 @@ from utils.paginations import EndlessPagination
 class NewsFeedViewSet(viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
     pagination_class = EndlessPagination
+    
     def get_queryset(self):
         # self defined queryset, because newsfeed has authenticated
         # only check current user's newsfeed

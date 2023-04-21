@@ -31,6 +31,8 @@ class UserSerializerForTweet(UserSerializerWithProfile):
 class UserSerializerForComment(UserSerializerWithProfile):
     pass
 
+class UserSerializerForLike(UserSerializerWithProfile):
+    pass
 
 class UserSerializerForFriendship(UserSerializerWithProfile):
     pass
