@@ -21,7 +21,7 @@ class FollowingUserIdSetMixin:
 # we can use source=xxxx to visit every model instance's xxxx method
 # model_instance.xxxx -->
 class FollowingSerializer(serializers.ModelSerializer, FollowingUserIdSetMixin):
-    user = UserSerializerForFriendship(source='to_user')
+    user = UserSerializerForFriendship(source='cached_to_user')
     created_at = serializers.DateTimeField()
     has_followed = serializers.SerializerMethodField()
 
@@ -33,7 +33,7 @@ class FollowingSerializer(serializers.ModelSerializer, FollowingUserIdSetMixin):
         return obj.to_user_id in self.following_user_id_set
 
 class FollowerSerializer(serializers.ModelSerializer, FollowingUserIdSetMixin):
-    user = UserSerializerForFriendship(source='from_user')
+    user = UserSerializerForFriendship(source='cached_from_user')
     created_at = serializers.DateTimeField()
     has_followed = serializers.SerializerMethodField()
 

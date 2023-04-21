@@ -26,10 +26,10 @@ class FriendshipApiTests(TestCase):
         # create followings and followers for dongxie
         for i in range(2):
             follower = self.create_user('dongxie_follower{}'.format(i))
-            self.create_friendship(from_user=follower, to_user=self.dongxie)
+            Friendship.objects.create(from_user=follower, to_user=self.dongxie)
         for i in range(3):
             following = self.create_user('dongxie_following{}'.format(i))
-            self.create_friendship(from_user=self.dongxie, to_user=following)
+            Friendship.objects.create(from_user=self.dongxie, to_user=following)
 
     def test_follow(self):
         url = FOLLOW_URL.format(self.linghu.id)
@@ -69,7 +69,7 @@ class FriendshipApiTests(TestCase):
         response = self.linghu_client.post(url)
         self.assertEqual(response.status_code, 400)
         # unfollow successfully
-        self.create_friendship(from_user=self.dongxie, to_user=self.linghu)
+        Friendship.objects.create(from_user=self.dongxie, to_user=self.linghu)
         before_count = Friendship.objects.count()
         response = self.dongxie_client.post(url)
         self.assertEqual(response.status_code, 200)
@@ -97,6 +97,7 @@ class FriendshipApiTests(TestCase):
         ts2 = response.data['results'][2]['created_at']
         self.assertEqual(ts0 > ts1, True)
         self.assertEqual(ts1 > ts2, True)
+       # print(response.data['results'][0]['user']['username'])
         self.assertEqual(
             response.data['results'][0]['user']['username'],
             'dongxie_following2',
