@@ -183,6 +183,7 @@ CACHES = {
 }
 
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
@@ -204,6 +205,14 @@ AWS_STORAGE_BUCKET_NAME = 'django-coffeechat'
 AWS_S3_REGION_NAME = 'us-east-1'
 
 MEDIA_ROOT = 'media/'
+
+# Redis
+# install in docker and then install python server
+# pip install redis
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+REDIS_DB = 0 if TESTING else 1
+REDIS_KEY_EXPIRE_TIME = 7 * 86400
 
 try:
     from .local_settings import *
