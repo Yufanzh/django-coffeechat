@@ -1,8 +1,7 @@
-from accounts.services import UserService
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save
 from likes.models import Likes
 from tweets.constants import TweetPhotoStatus, TWEET_PHOTO_STATUS_CHOICES
 from tweets.listeners import push_tweet_to_cache
@@ -15,6 +14,12 @@ class Tweet(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     content = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # newly created field has to set null=True, 
+    # or default = 0 will traverse the whole table to set
+    # which will cause very slow migration, lock the table
+    likes_count = models.IntegerField(default=0, null=True)
+    comments_count = models.IntegerField(default=0, null=True)
 
     class Meta:
         index_together = (('user', 'created_at'),)
@@ -80,5 +85,4 @@ class TweetPhoto(models.Model):
         return f'{self.tweet_id}: {self.file}'
 
 post_save.connect(invalidate_object_cache, sender=Tweet)
-pre_delete.connect(invalidate_object_cache, sender=Tweet)
 post_save.connect(push_tweet_to_cache, sender=Tweet)
