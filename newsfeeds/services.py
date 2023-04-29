@@ -1,5 +1,6 @@
 from friendships.services import FriendshipService
 from newsfeeds.models import NewsFeed
+from newsfeeds.tasks import fanout_newsfeeds_task
 from coffeechat.cache import USER_NEWSFEEDS_PATTERN
 from utils.redis_helper import RedisHelper
 
@@ -7,21 +8,15 @@ class NewsFeedService(object):
 
     @classmethod
     def fanout_to_followers(cls, tweet):
-        followers = FriendshipService.get_followers(tweet.user)
-        # for + query will be very slow, not encouraged by production
-        # for follower in followers:
-        #     NewsFeed.objects.create(user=follower, tweet=tweet)
-        # django method -- bulk_create!
-        newsfeeds = [
-            NewsFeed(user=follower, tweet=tweet)
-            for follower in FriendshipService.get_followers(tweet.user)
-        ]
-        # append yourself
-        newsfeeds.append(NewsFeed(user=tweet.user, tweet=tweet))
-        NewsFeed.objects.bulk_create(newsfeeds)
-        # bulk create will not trigger post_save signal, so we need to push ourselves
-        for newsfeed in newsfeeds:
-            cls.push_newsfeed_to_cache(newsfeed)
+        # this sentence is to: create a fanout task under celery configured message queue
+        # param: tweet, any worker process monitoring the message queue will have the chance to get this task
+        # worker process will exercise fanout_newsfeeds_task code to get async tasks
+        # if process this task needs 10s, then it will spend on the worker process, not during client post tweet
+        # so .delay will exercise immediately, user won't feel
+        # delay params must be something that celery can serialize. so we can only pass tweet.id, not tweet itself
+        # because celery doesn't know how to serialize Tweet.
+        
+        fanout_newsfeeds_task.delay(tweet.id)
 
     @classmethod
     def get_cached_newsfeeds(cls, user_id):
