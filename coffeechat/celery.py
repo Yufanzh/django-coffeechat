@@ -1,6 +1,9 @@
 import os
 
 from celery import Celery
+import pymysql
+
+pymysql.install_as_MySQLdb()
 
 # set the default Django settings module for the 'celery' program
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'coffeechat.settings')
