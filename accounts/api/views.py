@@ -7,6 +7,8 @@ from accounts.api.serializers import (
 )
 from accounts.models import UserProfile
 from django.contrib.auth.models import User
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -27,7 +29,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     API endpoint that allows users to be viewed or edited.
     """
     queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
+    serializer_class = UserSerializerWithProfile
     permission_classes = (permissions.IsAdminUser,)
 
 class AccountViewSet(viewsets.ViewSet):
@@ -35,6 +37,7 @@ class AccountViewSet(viewsets.ViewSet):
     serializer_class = SignupSerializer
 
     @action(methods=['POST'], detail=False)
+    @method_decorator(ratelimit(key='ip', rate='3/s', method='POST', block=True))
     def signup(self, request):
         """
         utilize username, email, password
@@ -60,6 +63,7 @@ class AccountViewSet(viewsets.ViewSet):
         }, status=HTTP_201_CREATED)
     
     @action(methods=['POST'], detail=False)
+    @method_decorator(ratelimit(key='ip', rate='3/s', method='POST', block=True))
     def login(self, request):
         """
         default username: admin
@@ -88,6 +92,7 @@ class AccountViewSet(viewsets.ViewSet):
         })
 
     @action(methods=['GET'], detail=False)
+    @method_decorator(ratelimit(key='ip', rate='3/s', method='GET', block=True))
     def login_status(self, request):
         """
         check user current login status
@@ -102,6 +107,7 @@ class AccountViewSet(viewsets.ViewSet):
         return Response(data)
     
     @action(methods=['POST'], detail=False)
+    @method_decorator(ratelimit(key='ip', rate='3/s', method='POST', block=True))
     def logout(self, request):
         """
         log out current user

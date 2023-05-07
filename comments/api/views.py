@@ -7,6 +7,8 @@ from comments.api.serializers import (
     CommentSerializerForCreate,
     CommentSerializerForUpdate,
 )
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from utils.permissions import IsObjectOwner
 from utils.decorators import required_params
 from inbox.services import NotificationService
@@ -37,6 +39,7 @@ class CommentViewSet(viewsets.GenericViewSet):
         return [AllowAny()]
     
     @required_params(params=['tweet_id'])
+    @method_decorator(ratelimit(key='user', rate='10/s', method='GET', block=True))
     def list(self, request, *args, **kwargs):
         
         # filter method 1
