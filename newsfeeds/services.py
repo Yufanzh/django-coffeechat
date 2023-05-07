@@ -1,6 +1,5 @@
-from friendships.services import FriendshipService
 from newsfeeds.models import NewsFeed
-from newsfeeds.tasks import fanout_newsfeeds_task
+from newsfeeds.tasks import fanout_newsfeeds_main_task
 from coffeechat.cache import USER_NEWSFEEDS_PATTERN
 from utils.redis_helper import RedisHelper
 
@@ -16,7 +15,7 @@ class NewsFeedService(object):
         # delay params must be something that celery can serialize. so we can only pass tweet.id, not tweet itself
         # because celery doesn't know how to serialize Tweet.
         
-        fanout_newsfeeds_task.delay(tweet.id)
+        fanout_newsfeeds_main_task.delay(tweet.id, tweet.user_id)
 
     @classmethod
     def get_cached_newsfeeds(cls, user_id):

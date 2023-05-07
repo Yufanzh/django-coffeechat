@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from kombu import Queue
 from pathlib import Path
 import sys
 
@@ -219,8 +220,12 @@ REDIS_LIST_LENGTH_LIMIT = 200 if not TESTING else 20
 # use the following command line to run worker process (async task process can run on different machines)
 # celery -A coffeechat worker -l INFO
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/2' if not TESTING else 'redis://127.0.0.1:6379/0'
-CELERY_TIMEZONE = 'UTC'
+CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_ALWAYS_EAGER = TESTING
+CELERY_QUEUES = (
+    Queue('default', routing_key='default'),
+    Queue('newsfeeds', routing_key='newsfeeds'),
+)
 
 try:
     from .local_settings import *
