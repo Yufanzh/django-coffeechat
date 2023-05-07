@@ -7,6 +7,8 @@ from friendships.api.serializers import (
     FollowerSerializer,
     FriendshipSerializerForCreate,
 )
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -22,6 +24,7 @@ class FriendshipViewSet(viewsets.GenericViewSet):
     
     # GET /api/friendships/1/followers/ --> 1: pk
     @action(methods=['GET'], detail=True, permission_classes=[AllowAny])
+    @method_decorator(ratelimit(key='user_or_ip', rate='3/s', method='GET', block=True))
     def followers(self, request, pk):
         # pk --> primary key
         friendships = Friendship.objects.filter(to_user_id=pk).order_by('-created_at')
@@ -30,6 +33,7 @@ class FriendshipViewSet(viewsets.GenericViewSet):
         return self.get_paginated_response(serializer.data)
 
     @action(methods=['GET'], detail=True, permission_classes=[AllowAny])
+    @method_decorator(ratelimit(key='user_or_ip', rate='3/s', method='GET', block=True))
     def followings(self, request, pk):
         # pk --> primary key
         friendships = Friendship.objects.filter(from_user_id=pk).order_by('-created_at')
@@ -38,6 +42,7 @@ class FriendshipViewSet(viewsets.GenericViewSet):
         return self.get_paginated_response(serializer.data)
     
     @action(methods=['POST'], detail=True, permission_classes=[IsAuthenticated])
+    @method_decorator(ratelimit(key='user', rate='10/s', method='POST', block=True))
     def follow(self, request, pk):
         # edge case: multi-follow at the same person
         # if already followed, return 201
@@ -60,6 +65,7 @@ class FriendshipViewSet(viewsets.GenericViewSet):
         return Response({'success': True}, status=status.HTTP_201_CREATED)
 
     @action(methods=['POST'], detail=True, permission_classes=[IsAuthenticated])
+    @method_decorator(ratelimit(key='user', rate='10/s', method='POST', block=True))
     def unfollow(self, request, pk):
         # Attention!! pk is a str not int
         if request.user.id == int(pk):
