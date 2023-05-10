@@ -12,3 +12,4 @@ pymemcache
 redis==4.5.4
 celery
 django-ratelimit
+happybase

@@ -2,6 +2,23 @@
 
 version: "3"
 services:
+  hbase:
+    container_name: hbase
+    image: dajobe/hbase
+    restart: always
+    ports:
+      - "2182:2181"
+      - "8081:8080"
+      - "8085:8085"
+      - "9090:9090"
+      - "9095:9095"
+      - "16000:16000"
+      - "16010:16010"
+      - "16201:16201"
+      - "16020:16020"
+      - "16030:16030"
+      - "16301:16301"
+
   mysql8:
     platform: linux/amd64 # 不加这行会报：ERROR: no matching manifest for linux/arm64/v8 in the manifest list entries
     container_name: mysql8
@@ -37,3 +54,6 @@ volumes:
 # Q: 为什么 redis 使用了 volumes，而 mysql 没有使用 volumes
 # A：挂了 volumes 之后，容器的 rm 之后重新 run 一个，数据也不会丢，想要这个特性就可以给 mysql 也挂上，因为这个项目是学习用途，所以不加也没事
 # 生产环境中，mysql 一般也不会容器化部署，redis 倒是容器化部署挺多的，因为 mysql 要求的可靠性比 redis 高一些。
+
+  
+

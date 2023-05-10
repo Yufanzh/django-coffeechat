@@ -1,4 +1,6 @@
+*.box
 media/
+hbase-2.4.4/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

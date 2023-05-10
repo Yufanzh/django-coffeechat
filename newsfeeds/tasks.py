@@ -30,6 +30,7 @@ def fanout_newsfeeds_main_task(tweet_id, tweet_user_id):
 
     # get all follower ids, split them in batches
     follower_ids = FriendshipService.get_follower_ids(tweet_user_id)
+    
     index = 0
     while index < len(follower_ids):
         batch_ids = follower_ids[index: index + FANOUT_BATCH_SIZE]
